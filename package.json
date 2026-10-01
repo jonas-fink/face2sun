@@ -1,0 +1,27 @@
+{
+    "name": "face2sun",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "workspaces": [
+        "backend",
+        "client",
+        "shared"
+    ],
+    "engines": {
+        "node": ">=22.18"
+    },
+    "scripts": {
+        "dev:backend": "npm run dev -w backend",
+        "dev:client": "npm run dev -w client",
+        "dev": "npm run build -w shared && concurrently -n backend,client -c blue,green \"npm:dev:backend\" \"npm:dev:client\"",
+        "build": "npm run build -w shared && npm run build -w backend && npm run build -w client",
+        "test": "npm run test -w backend && npm run test -w client",
+        "typecheck": "npm run build -w shared && npm run typecheck -w backend && npm run typecheck -w client",
+        "lint": "npm run lint -w client"
+    },
+    "devDependencies": {
+        "concurrently": "^10.0.5",
+        "typescript": "<6.1"
+    }
+}

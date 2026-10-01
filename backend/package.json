@@ -1,0 +1,75 @@
+{
+    "name": "face2sun-backend",
+    "version": "1.0.0",
+    "private": true,
+    "description": "",
+    "main": "dist/server.js",
+    "type": "module",
+    "imports": {
+        "#config": {
+            "dev": "./src/config/index.ts",
+            "default": "./dist/config/index.js"
+        },
+        "#controllers": {
+            "dev": "./src/controllers/index.ts",
+            "default": "./dist/controllers/index.js"
+        },
+        "#middlewares": {
+            "dev": "./src/middlewares/index.ts",
+            "default": "./dist/middlewares/index.js"
+        },
+        "#models": {
+            "dev": "./src/models/index.ts",
+            "default": "./dist/models/index.js"
+        },
+        "#routes": {
+            "dev": "./src/routes/index.ts",
+            "default": "./dist/routes/index.js"
+        },
+        "#schemas": {
+            "dev": "./src/schemas/index.ts",
+            "default": "./dist/schemas/index.js"
+        },
+        "#services": {
+            "dev": "./src/services/index.ts",
+            "default": "./dist/services/index.js"
+        },
+        "#types": {
+            "dev": "./src/types/index.ts",
+            "default": "./dist/types/index.js"
+        },
+        "#utils": {
+            "dev": "./src/utils/index.ts",
+            "default": "./dist/utils/index.js"
+        }
+    },
+    "scripts": {
+        "dev": "node --watch --conditions dev --env-file=.env src/server.ts",
+        "prebuild": "rm -rf dist",
+        "build": "tsc",
+        "prestart": "npm run build",
+        "start": "node dist/server.js",
+        "test": "vitest run",
+        "typecheck": "tsc -p tsconfig.test.json"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.6",
+        "express": "^5.2.1",
+        "face2sun-shared": "*",
+        "mongoose": "^9.10.3",
+        "zod": "^4.6.5"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.10",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "@types/node": "^26.6.3",
+        "@types/supertest": "^7.2.1",
+        "supertest": "^7.3.0",
+        "vitest": "^5.0.3"
+    }
+}
