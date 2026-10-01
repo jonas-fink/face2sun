@@ -9,6 +9,14 @@ const EMPTY = { presenceCount: 0, moments: [], light: null, ritual: null };
 
 type PhotoInput = { contentType: string; dataBase64: string };
 
+const OBJECT_ID = /^[0-9a-f]{24}$/i;
+
+export async function findPlace(placeId: string) {
+    const place = OBJECT_ID.test(placeId) ? await Place.findById(placeId) : null;
+    if (!place) throw httpError(404, 'Place not found');
+    return place;
+}
+
 export async function presenceCount(placeId: string, now = new Date()): Promise<number> {
     return CheckIn.countDocuments({ placeId, expiresAt: { $gt: now } });
 }
@@ -21,8 +29,7 @@ async function ritualSummary(placeId: string) {
 }
 
 export async function getPublicPlace(placeId: string): Promise<PublicPlace> {
-    const place = await Place.findById(placeId);
-    if (!place) throw httpError(404, 'Place not found');
+    const place = await findPlace(placeId);
     const [count, moments, light, ritual] = await Promise.all([
         presenceCount(place.id),
         Moment.find({ placeId: place._id }).sort({ createdAt: -1 }).limit(50),
@@ -82,15 +89,13 @@ export async function nearbyPlaces(lat: number, lng: number): Promise<PublicPlac
 }
 
 export async function createMoment(memberId: string, placeId: string, text: string) {
-    const place = await Place.findById(placeId);
-    if (!place) throw httpError(404, 'Place not found');
+    await findPlace(placeId);
     const moment = await Moment.create({ placeId, memberId, text });
     return { id: moment.id, text: moment.text, at: moment.createdAt.toISOString() };
 }
 
 export async function putLight(memberId: string, placeId: string, text: string) {
-    const place = await Place.findById(placeId);
-    if (!place) throw httpError(404, 'Place not found');
+    await findPlace(placeId);
     const light = await Light.findOneAndUpdate(
         { placeId },
         { memberId, text, createdAt: new Date() },

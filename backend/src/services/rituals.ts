@@ -1,7 +1,8 @@
 import type { Types } from 'mongoose';
-import { Place, Ritual, RitualSpot } from '#models';
+import { Ritual, RitualSpot } from '#models';
 import { canTakeSpot } from '#domain';
 import { httpError, isDuplicateKey } from '#utils';
+import { findPlace } from './places.ts';
 import { toPublicRitual } from './public.ts';
 
 async function spotsTaken(ritualId: Types.ObjectId): Promise<number> {
@@ -13,8 +14,7 @@ export async function createRitual(
     placeId: string,
     input: { title: string; recurrence: string; cap: number },
 ) {
-    const place = await Place.findById(placeId);
-    if (!place) throw httpError(404, 'Place not found');
+    await findPlace(placeId);
     try {
         const ritual = await Ritual.create({
             placeId,
@@ -31,8 +31,7 @@ export async function createRitual(
 }
 
 export async function takeSpot(memberId: string, placeId: string): Promise<{ status: 200 | 201; spotsTaken: number; cap: number }> {
-    const place = await Place.findById(placeId);
-    if (!place) throw httpError(404, 'Place not found');
+    await findPlace(placeId);
     const ritual = await Ritual.findOne({ placeId });
     if (!ritual) throw httpError(404, 'This place has no ritual');
 

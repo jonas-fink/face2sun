@@ -3,7 +3,7 @@ import request from 'supertest';
 import { Types } from 'mongoose';
 import app from './app.ts';
 import { assertPublic } from '#domain';
-import { CheckIn, Moment, Place } from '#models';
+import { CheckIn, Light, Moment, Place, Ritual, RitualSpot } from '#models';
 import { clearTestDb, connectTestDb, disconnectTestDb } from './test/db.ts';
 
 const TINY_JPEG =
@@ -266,6 +266,43 @@ describe('face2sun api', () => {
         expect(missing.status).toBe(404);
         expect(missing.body.message).toBe('Place not found');
     });
+
+    it.each(['garbage', '123', 'garbagegarba', 'zzzzzzzzzzzzzzzzzzzzzzzz'])(
+        'answers 404 "Place not found" for the non-ObjectId place id %s and stores nothing',
+        async (badId) => {
+            const { agent } = await register();
+            const place = await agent.post('/api/places').send(placeBody());
+            const id = place.body.id;
+            await agent.put(`/api/places/${id}/light`).send({ text: 'Original line.' });
+            await agent.post(`/api/places/${id}/ritual`).send({ title: 'Ritual', recurrence: 'Weekly', cap: 3 });
+
+            const counts = async () => [
+                await Place.countDocuments(),
+                await CheckIn.countDocuments(),
+                await Moment.countDocuments(),
+                await Light.countDocuments(),
+                await Ritual.countDocuments(),
+                await RitualSpot.countDocuments(),
+            ];
+            const before = await counts();
+
+            const responses = [
+                await request(app).get(`/api/places/${badId}`),
+                await agent.post(`/api/places/${badId}/check-ins`).send({}),
+                await agent.post(`/api/places/${badId}/moments`).send({ text: 'hello' }),
+                await agent.put(`/api/places/${badId}/light`).send({ text: 'Changed line.' }),
+                await agent.post(`/api/places/${badId}/ritual`).send({ title: 'Ritual', recurrence: 'Weekly', cap: 3 }),
+                await agent.post(`/api/places/${badId}/ritual/spots`).send({}),
+            ];
+            for (const res of responses) {
+                expect(res.status).toBe(404);
+                expect(res.body.message).toBe('Place not found');
+            }
+
+            expect(await counts()).toEqual(before);
+            expect((await Light.findOne())!.text).toBe('Original line.');
+        },
+    );
 
     it('lists the three nearest places inside a walk', async () => {
         const { agent } = await register();
