@@ -8,6 +8,7 @@ export default defineConfig({
     test: {
         environment: 'node',
         globals: true,
+        fileParallelism: false,
         env: {
             NODE_ENV: 'test',
             MONGO_URI: 'mongodb://127.0.0.1:27017/test',

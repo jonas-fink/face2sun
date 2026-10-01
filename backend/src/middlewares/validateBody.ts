@@ -1,5 +1,6 @@
 import type { RequestHandler } from 'express';
 import { z } from 'zod';
+import { fieldsFromZod } from '#utils';
 
 const validateBody =
     (zodSchema: z.ZodType): RequestHandler =>
@@ -9,7 +10,7 @@ const validateBody =
         }
         const { data, error, success } = zodSchema.safeParse(req.body);
         if (!success) {
-            next(new Error(z.prettifyError(error), { cause: { status: 400 } }));
+            next(new Error('Invalid request', { cause: { status: 400, fields: fieldsFromZod(error) } }));
         } else {
             req.body = data;
             next();

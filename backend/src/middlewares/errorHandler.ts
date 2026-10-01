@@ -23,9 +23,12 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     }
 
     const status = statusFor(err);
+    const cause = err.cause ?? {};
 
     res.status(status).json({
         message: messageFor(err, status),
+        ...(cause.fields ? { fields: cause.fields } : {}),
+        ...(cause.extra ?? {}),
         ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
     });
 };

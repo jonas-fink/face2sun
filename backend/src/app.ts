@@ -8,7 +8,7 @@ import routes from '#routes';
 const app = express();
 
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }));
-app.use(express.json());
+app.use(express.json({ limit: '12mb' }));
 app.use(cookieParser());
 
 app.use('/api', routes);

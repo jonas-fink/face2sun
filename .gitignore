@@ -6,4 +6,5 @@ dist-ssr
 logs
 *.log
 .DS_Store
+uploads
 /specs/
