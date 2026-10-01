@@ -52,7 +52,7 @@ const TextWriteForm = ({ label, hint, submitLabel, multiline = false, pending, e
                 />
             )}
             {hint && !fieldError && (
-                <p id={`${id}-hint`} className="mt-1 text-sm text-stone-700">
+                <p id={`${id}-hint`} className="mt-1 text-sm text-bark">
                     {hint}
                 </p>
             )}

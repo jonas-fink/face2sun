@@ -2,7 +2,8 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router';
 import type { LightCue } from 'face2sun-shared';
 import { ApiError, createPlace } from '../api/face2sun';
-import { buttonClass, cardClass, errorTextClass, inputClass, labelClass, secondaryButtonClass, smallButtonClass } from '../components/ui';
+import { CueIcon } from '../components/brand';
+import { CUE_BG, buttonClass, displayClass, errorTextClass, eyebrowClass, inputClass, labelClass, secondaryButtonClass, smallButtonClass } from '../components/ui';
 import { MAX_PHOTOS, prepareImage, type PreparedPhoto } from '../lib/images';
 import { LIGHT_CUES, LIGHT_CUE_LABELS, signInPath } from '../lib/labels';
 import { useSession } from '../session/useSession';
@@ -114,18 +115,17 @@ const NewPlacePage = () => {
 
     return (
         <div className="space-y-3">
-            <Link to="/" className="inline-flex min-h-11 items-center text-sm font-medium underline">
+            <Link to="/" className={`${smallButtonClass} bg-paper`}>
                 Back to nearby places
             </Link>
-            <section className={cardClass} aria-labelledby="new-place-heading">
-                <h1 id="new-place-heading" className="text-xl font-bold">
+            <section aria-labelledby="new-place-heading" className="pt-4">
+                <p className={eyebrowClass}>Share a place</p>
+                <h1 id="new-place-heading" className={`${displayClass} mt-2 text-4xl leading-none`}>
                     Add a place
                 </h1>
-                <p className="mt-1 text-sm text-stone-700">
-                    Share a favorite place. Its location is only used to decide whether it is within a walk.
-                </p>
+                <p className="mt-3 text-bark">Where does the sun find you? Its location is only used to decide whether it is within a walk.</p>
 
-                <form className="mt-4 space-y-5" onSubmit={handleSubmit} noValidate>
+                <form className="mt-6 space-y-6" onSubmit={handleSubmit} noValidate>
                     <div>
                         <label className={labelClass} htmlFor="place-name">
                             Name
@@ -158,34 +158,38 @@ const NewPlacePage = () => {
                         <FieldError id="place-description-error" message={fields.description} />
                     </div>
 
-                    <div>
-                        <label className={labelClass} htmlFor="place-cue">
-                            Best time of day
-                        </label>
-                        <select
-                            id="place-cue"
-                            className={inputClass}
-                            value={lightCue}
-                            onChange={(event) => setLightCue(event.target.value as LightCue)}
-                            aria-invalid={Boolean(fields.lightCue)}
-                            aria-describedby={fields.lightCue ? 'place-cue-error' : undefined}
-                        >
+                    <fieldset aria-describedby={fields.lightCue ? 'place-cue-error' : undefined}>
+                        <legend className={labelClass}>When is the light best?</legend>
+                        <div className="grid grid-cols-2 gap-2.5">
                             {LIGHT_CUES.map((cue) => (
-                                <option key={cue} value={cue}>
+                                <label
+                                    key={cue}
+                                    className={`flex min-h-14 cursor-pointer items-center gap-2.5 rounded-2xl px-3.5 font-semibold transition has-checked:ring-[2.5px] has-checked:ring-ink has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-dusk ${CUE_BG[cue]}`}
+                                >
+                                    <input
+                                        type="radio"
+                                        name="lightCue"
+                                        value={cue}
+                                        checked={lightCue === cue}
+                                        onChange={() => setLightCue(cue)}
+                                        className="sr-only"
+                                    />
+                                    <CueIcon cue={cue} size={20} />
                                     {LIGHT_CUE_LABELS[cue]}
-                                </option>
+                                </label>
                             ))}
-                        </select>
+                        </div>
                         <FieldError id="place-cue-error" message={fields.lightCue} />
-                    </div>
+                    </fieldset>
 
                     <div>
                         <span className={labelClass}>Location</span>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-3 rounded-3xl bg-cue-morning p-3">
                             <button type="button" className={secondaryButtonClass} onClick={captureLocation} disabled={locationPhase === 'locating'}>
                                 {location ? 'Update location' : 'Use my current location'}
                             </button>
-                            <p role="status" className="text-sm text-stone-700">
+                            <p role="status" className="flex items-center gap-2 text-sm font-semibold text-ink">
+                                {locationPhase === 'set' && <span aria-hidden="true" className="size-3 rounded-full bg-ember motion-safe:animate-glow" />}
                                 {locationPhase === 'locating' && 'Finding your location.'}
                                 {locationPhase === 'set' && 'Location set.'}
                                 {locationPhase === 'failed' && 'Could not get your location. Allow location access and try again.'}
@@ -204,14 +208,14 @@ const NewPlacePage = () => {
                             type="file"
                             accept="image/*"
                             multiple
-                            className={inputClass}
+                            className="block w-full cursor-pointer rounded-3xl border-2 border-dashed border-bark bg-card p-4 text-sm text-bark file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-full file:border-0 file:bg-sun file:px-5 file:font-bold file:text-sunink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dusk disabled:cursor-not-allowed disabled:opacity-60"
                             onChange={(event) => void handlePhotos(event)}
                             disabled={photoBusy || photos.length >= MAX_PHOTOS}
                             aria-invalid={Boolean(photosError)}
                             aria-describedby={photosError ? 'place-photos-error' : undefined}
                         />
                         {photoBusy && (
-                            <p role="status" className="mt-1 text-sm text-stone-700">
+                            <p role="status" className="mt-1 text-sm text-bark">
                                 Preparing photos.
                             </p>
                         )}
@@ -220,7 +224,7 @@ const NewPlacePage = () => {
                             <ul className="mt-3 grid grid-cols-2 gap-3">
                                 {photos.map((photo, index) => (
                                     <li key={photo.id} className="space-y-1">
-                                        <img src={photo.previewUrl} alt={`Selected photo ${index + 1}`} className="aspect-4/3 w-full rounded-lg object-cover" />
+                                        <img src={photo.previewUrl} alt={`Selected photo ${index + 1}`} className="aspect-square w-full rounded-3xl object-cover" />
                                         <button type="button" className={smallButtonClass} onClick={() => removePhoto(photo.id)}>
                                             Remove photo {index + 1}
                                         </button>

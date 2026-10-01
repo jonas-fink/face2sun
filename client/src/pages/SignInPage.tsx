@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ApiError, login, register } from '../api/face2sun';
-import { buttonClass, cardClass, errorTextClass, inputClass, labelClass, secondaryButtonClass } from '../components/ui';
+import { Stars } from '../components/brand';
+import { buttonClass, cardClass, displayClass, errorTextClass, inputClass, labelClass, secondaryButtonClass } from '../components/ui';
 import { safeNextPath } from '../lib/labels';
 import { useSession } from '../session/useSession';
 
@@ -46,10 +47,10 @@ const SignInPage = () => {
     if (session.status === 'signedIn') {
         return (
             <section className={cardClass} aria-labelledby="signed-in-heading">
-                <h1 id="signed-in-heading" className="text-xl font-bold">
+                <h1 id="signed-in-heading" className={`${displayClass} text-3xl`}>
                     You are signed in
                 </h1>
-                <p className="mt-2 text-stone-800">Signed in as {session.email}.</p>
+                <p className="mt-2 text-bark">Signed in as {session.email}.</p>
                 <div className="mt-4 flex gap-3">
                     <Link to={next} className={buttonClass}>
                         Continue
@@ -65,14 +66,22 @@ const SignInPage = () => {
     const isLogin = mode === 'login';
 
     return (
-        <section className={cardClass} aria-labelledby="sign-in-heading">
-            <h1 id="sign-in-heading" className="text-xl font-bold">
+        <section aria-labelledby="sign-in-heading" className="space-y-5">
+            <div aria-hidden="true" className="relative -mx-4 h-56 overflow-hidden rounded-b-[48px] bg-cue-early">
+                <Stars points={[[10, 25], [26, 12], [80, 30], [70, 10], [15, 60]]} />
+                <div className="absolute top-14 left-1/2 size-44 -translate-x-1/2 motion-safe:animate-rise">
+                    <div className="absolute -inset-6 rounded-full border-[2.5px] border-dashed border-ember motion-safe:animate-spin-slow" />
+                    <div className="absolute inset-0 rounded-full bg-orb" />
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-14 bg-hill" />
+            </div>
+            <h1 id="sign-in-heading" className={`${displayClass} text-4xl leading-none`}>
                 {isLogin ? 'Sign in' : 'Create an account'}
             </h1>
-            <p className="mt-1 text-sm text-stone-700">
-                Browsing is open. An account is needed to add a place, check in, write a moment, leave a light, or take a ritual spot.
+            <p className="leading-relaxed text-bark">
+                Browsing is open. Your name never shows anywhere. An account is needed to add a place, check in, write a moment, leave a light, or take a ritual spot.
             </p>
-            <form className="mt-4 space-y-4" onSubmit={handleSubmit} noValidate>
+            <form className="space-y-4" onSubmit={handleSubmit} noValidate>
                 <div>
                     <label className={labelClass} htmlFor="email">
                         Email
@@ -108,7 +117,7 @@ const SignInPage = () => {
                         aria-describedby={error?.fields.password ? 'password-error' : 'password-hint'}
                     />
                     {!isLogin && !error?.fields.password && (
-                        <p id="password-hint" className="mt-1 text-sm text-stone-700">
+                        <p id="password-hint" className="mt-1 text-sm text-bark">
                             8 to 72 characters.
                         </p>
                     )}
@@ -127,7 +136,7 @@ const SignInPage = () => {
                     {pending ? 'Please wait.' : isLogin ? 'Sign in' : 'Create account'}
                 </button>
             </form>
-            <button type="button" className="mt-4 min-h-11 text-sm font-medium underline" onClick={switchMode}>
+            <button type="button" className="mx-auto block min-h-11 font-bold text-dusk underline" onClick={switchMode}>
                 {isLogin ? 'New here? Create an account' : 'Have an account? Sign in'}
             </button>
         </section>

@@ -1,4 +1,4 @@
-import { presenceLabel, safeNextPath, signInPath, spotsLabel } from './labels';
+import { greeting, presenceLabel, safeNextPath, signInPath, spotsLabel } from './labels';
 
 describe('labels', () => {
     it('shows Quiet for zero and a count otherwise', () => {
@@ -20,5 +20,12 @@ describe('labels', () => {
 
     it('encodes the next path for sign-in', () => {
         expect(signInPath('/places/abc')).toBe('/sign-in?next=%2Fplaces%2Fabc');
+    });
+
+    it('greets by the hour of the day', () => {
+        expect(greeting(4)).toBe('Good evening');
+        expect(greeting(5)).toBe('Good morning');
+        expect(greeting(12)).toBe('Good afternoon');
+        expect(greeting(18)).toBe('Good evening');
     });
 });

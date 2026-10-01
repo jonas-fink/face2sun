@@ -1,1 +1,101 @@
 @import 'tailwindcss';
+
+/* Golden hour (day) — night values below swap in via prefers-color-scheme */
+:root {
+    --c-paper: #fff6ec;
+    --c-ink: #2a1710;
+    --c-card: #ffffff;
+    --c-bark: #6b4a3a;
+    --c-line: #ead3bf;
+    --c-dusk: #b4410f;
+    --c-ember: #f2683c;
+    --c-orb: #ffd66b;
+    --c-hill: #f2683c;
+    --c-deep: #2a1710;
+    --c-on-deep: #fff6ec;
+    --c-error: #a8200d;
+    --c-cue-early: #ffd8c2;
+    --c-cue-morning: #fff0b8;
+    --c-cue-lunch: #ffd66b;
+    --c-cue-late: #ffb59a;
+    --c-shadow: rgba(180, 65, 15, 0.45);
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --c-paper: #1b1014;
+        --c-ink: #fff1e2;
+        --c-card: #2b1c20;
+        --c-bark: #d2b4a4;
+        --c-line: #4a3438;
+        --c-dusk: #ff9c6b;
+        --c-orb: #f2e3c6;
+        --c-hill: #24120f;
+        --c-deep: #2b1c20;
+        --c-on-deep: #fff1e2;
+        --c-error: #ff8a7a;
+        --c-cue-early: #4b2b2a;
+        --c-cue-morning: #3e3320;
+        --c-cue-lunch: #4d3a12;
+        --c-cue-late: #55291f;
+        --c-shadow: rgba(0, 0, 0, 0.5);
+        color-scheme: dark;
+    }
+}
+
+@theme inline {
+    --color-paper: var(--c-paper);
+    --color-ink: var(--c-ink);
+    --color-card: var(--c-card);
+    --color-bark: var(--c-bark);
+    --color-line: var(--c-line);
+    --color-dusk: var(--c-dusk);
+    --color-ember: var(--c-ember);
+    --color-orb: var(--c-orb);
+    --color-hill: var(--c-hill);
+    --color-deep: var(--c-deep);
+    --color-on-deep: var(--c-on-deep);
+    --color-error: var(--c-error);
+    --color-cue-early: var(--c-cue-early);
+    --color-cue-morning: var(--c-cue-morning);
+    --color-cue-lunch: var(--c-cue-lunch);
+    --color-cue-late: var(--c-cue-late);
+}
+
+@theme {
+    /* marigold and the text on it stay the same day and night */
+    --color-sun: #ffb627;
+    --color-sunink: #2a1710;
+
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Bricolage Grotesque', 'Figtree', ui-sans-serif, sans-serif;
+
+    --animate-spin-slow: spin 48s linear infinite;
+    --animate-float: f2s-float 6s ease-in-out infinite;
+    --animate-glow: f2s-glow 2.8s ease-out infinite;
+    --animate-breathe: f2s-breathe 4s ease-in-out infinite;
+    --animate-rise: f2s-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    --animate-twinkle: f2s-twinkle 3.6s ease-in-out infinite;
+
+    @keyframes f2s-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    @keyframes f2s-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(242, 104, 60, 0.45); }
+        50% { box-shadow: 0 0 0 8px rgba(242, 104, 60, 0); }
+    }
+    @keyframes f2s-breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    @keyframes f2s-rise {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: none; }
+    }
+    @keyframes f2s-twinkle {
+        0%, 100% { opacity: 0.25; }
+        50% { opacity: 1; }
+    }
+}

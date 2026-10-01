@@ -7,14 +7,15 @@ const MapStrip = ({ places }: { places: PublicPlaceCard[] }) => {
         <div
             role="img"
             aria-label={`${places.length} ${places.length === 1 ? 'place' : 'places'} within a walk, nearest first`}
-            className="relative flex h-14 items-center justify-around rounded-xl border border-stone-300 bg-amber-100 px-4"
+            className="relative flex h-14 items-center justify-around rounded-full bg-cue-morning px-4"
         >
-            <div aria-hidden="true" className="absolute inset-x-6 top-1/2 h-px bg-stone-400" />
+            <div aria-hidden="true" className="absolute inset-x-8 top-1/2 border-t-2 border-dashed border-bark/40" />
+            <span aria-hidden="true" className="relative size-3 rounded-full border-2 border-ink bg-paper" title="You" />
             {places.map((place, index) => (
                 <span
                     key={place.id}
                     aria-hidden="true"
-                    className="relative flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-sm font-bold text-stone-900 ring-2 ring-white"
+                    className="relative flex size-9 items-center justify-center rounded-full bg-sun font-display text-sm font-extrabold text-sunink ring-4 ring-cue-morning"
                 >
                     {index + 1}
                 </span>

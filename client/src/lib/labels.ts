@@ -27,3 +27,6 @@ export const safeNextPath = (next: string | null): string => {
 };
 
 export const signInPath = (next: string): string => `/sign-in?next=${encodeURIComponent(next)}`;
+
+export const greeting = (hour: number): string =>
+    hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 18 ? 'Good afternoon' : 'Good evening';
